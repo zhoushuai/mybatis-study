@@ -11,6 +11,7 @@
     <modules>
         <module>mybatis-study-05-cache</module>
         <module>mybatis-study-06-ehcache</module>
+        <module>mybatis-study-03-cud</module>
     </modules>
 
     <dependencyManagement>
