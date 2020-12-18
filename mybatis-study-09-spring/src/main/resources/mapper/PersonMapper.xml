@@ -3,9 +3,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.ken.study.admin.mapper.PersonMapper">
+    <resultMap id="personMapper" type="org.ken.study.admin.domain.entity.Person">
+        <id column="id" property="id"/>
+        <result column="first_name" property="firstName"/>
+        <result column="last_name" property="lastName"/>
+        <result column="contact_addr" property="contactAddr"/>
+        <result column="contact_phone" property="contactPhone"/>
+    </resultMap>
+
+    <delete id="deletePerson">
+        delete
+        from T_PERSON
+        where ID = #{id}
+    </delete>
 
     <select id="selectOne" resultType="org.ken.study.admin.domain.entity.Person">
-        select * from t_person where id = #{id}
+        select *
+        from t_person
+        where id = #{id}
     </select>
+
+    <select id="selectAll" resultType="org.ken.study.admin.domain.entity.Person">
+        select *
+        from T_PERSON
+    </select>
+
+    <insert id="insertPerson" parameterType="org.ken.study.admin.domain.entity.Person"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into T_PERSON (id, first_name, last_name, contact_phone, contact_addr)
+        VALUES (#{id}, #{firstName}, #{lastName}, #{contactPhone}, #{contactAddr})
+    </insert>
+
+    <update id="updatePerson" parameterType="org.ken.study.admin.domain.entity.Person">
+        update t_person
+        set first_name    = #{firstName},
+            last_name     = #{lastName},
+            contact_phone = #{contactPhone},
+            contact_addr  = #{contactAddr}
+        where id = #{id}
+    </update>
 
 </mapper>
