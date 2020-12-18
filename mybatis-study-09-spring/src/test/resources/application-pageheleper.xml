@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!---
+    1. mybatis集成spring框架
+       mybatis集成spring框架后可以使用spring的数据源同时还可以使用spring基于切面的事务管理的特性，
+       更重要的时可以使用spring的依赖注入，方便业务调依赖mybatis的mapper操作。
+
+       mybatis提供用于集成spring的依赖提供了灵活构建SqlSessionFactory实例类SqlSessionFactoryBean，使用这个类配置
+       SqlSessionFactory可以配置mybatis-config中所有的配置项。
+       当你习惯了使用mybatis-config.xml配置，它也支持使用mybatis-config.xml来配置SqlSessionFactory。
+
+       注意：
+       使用mybatis-config.xml和使用spring bean配置SqlSessionFactory两种方式只能选择其中一种，如果同时配置了两种方式
+       Spring在创建SqlSessionFactor时会报异常。
+
+       Caused by: org.springframework.beans.factory.BeanCreationException:
+       Error creating bean with name 'org.mybatis.spring.SqlSessionFactoryBean#0'
+       defined in URL [file://target/test-classes/application-pageheleper.xml]:
+       Invocation of init method failed; nested exception is java.lang.IllegalStateException:
+       Property 'configuration' and 'configLocation' can not specified with together
+
+
+    2. 集成第三方分页插件PageHelper
+        Mybatis为开发者和使用者提供了扩展Mybatis的入口，用户可以根据自己需求自定义插件还来可以在网络上下载符合自己需求第三方插件。
+        下面我们来集成一个分页插件PageHelper.
+    -->
+
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+          destroy-method="close">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="plugins" ref="pageInterceptor"/>
+        <property name="databaseIdProvider" ref="databaseIdProvider"/>
+        <property name="configuration">
+            <bean class="org.apache.ibatis.session.Configuration">
+                <property name="mapUnderscoreToCamelCase" value="true"/>
+            </bean>
+        </property>
+
+    </bean>
+
+    <bean id="pageInterceptor" class="com.github.pagehelper.PageInterceptor">
+        <property name="properties">
+            <value>
+                helperDialect=mysql
+                reasonable=true
+                supportMethodsArguments=true
+                params=count=countSql
+                autoRuntimeDialect=true
+            </value>
+        </property>
+    </bean>
+
+    <bean id="databaseIdProvider" class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+        <property name="properties">
+            <props>
+                <prop key="SQL Server">sqlserver</prop>
+                <prop key="DB2">db2</prop>
+                <prop key="Oracle">oracle</prop>
+                <prop key="MySQL">mysql</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="annotationClass" value="org.apache.ibatis.annotations.Mapper"/>
+        <property name="basePackage" value="org.ken.study"/>
+    </bean>
+
+    <!-- 配置spring事务-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager"/>
+    </bean>
+
+</beans>

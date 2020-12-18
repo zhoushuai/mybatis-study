@@ -6,5 +6,14 @@
     <settings>
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
-
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <property name="helperDialect" value="mysql"/>
+            <property name="reasonable" value="true"/>
+            <property name="supportMethodsArguments" value="true"/>
+            <property name="params=count=" value="count"/>
+            <property name="pageSizeZero" value="0"/>
+            <property name="autoRuntimeDialect" value="true"/>
+        </plugin>
+    </plugins>
 </configuration>

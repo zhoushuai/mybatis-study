@@ -1,5 +1,8 @@
 package org.ken.study.admin.mapper;
 
+import com.github.pagehelper.ISelect;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.ken.study.admin.domain.entity.Person;
@@ -76,6 +79,15 @@ public class PersonMapperTest {
         assertEquals("小飞飞", result2.getFirstName());
         assertEquals("成都", result2.getContactAddr());
         assertNull(result2.getContactPhone());
+    }
+
+    @Test
+    public void selectPage() {
+        Page<Person> selectPage = PageHelper.offsetPage(0, 2)
+                .doSelectPage(() -> personMapper.selectAll());
+        assertEquals(2, selectPage.getResult().size());
+        assertEquals(3, selectPage.getTotal());
+
     }
 
 
