@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.ken.study.admin.domain.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
@@ -14,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
  * @author yszh@royole.com
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@Sql(scripts = {"/sql/h2/schema.sql", "/sql/h2/person-mapper.sql"})
 @ContextConfiguration(locations = "classpath*:application-pageheleper.xml")
 public class OriginalSpringXmlPersonMapper {
 
