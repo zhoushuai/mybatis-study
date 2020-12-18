@@ -12,7 +12,7 @@
         <module>mybatis-study-05-cache</module>
         <module>mybatis-study-06-ehcache</module>
         <module>mybatis-study-03-cud</module>
-        <module>mybatis-study-09-spring</module>
+        <module>mybatis-study-04</module>
     </modules>
 
     <dependencyManagement>
